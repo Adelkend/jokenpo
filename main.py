@@ -3,17 +3,18 @@ from random import choice
 import utils
 import engine
 import menu
+import sys
 
 pygame.init()
 
 # ------------ VARIABLES --------------
 
 yellow = 186, 149, 13
-gray = 61, 59, 52
+grey = 61, 59, 52
 
 # ------------ SETUP -----------------
 
-screen = utils.generate_window()
+window = utils.generate_window()
 running = True
 
 # Lista das jogadas válidas
@@ -39,7 +40,7 @@ while running:
         pygame.display.update()
 
     if engine.window.scene == "game":
-        screen.fill(gray)
+        window.screen.fill(grey)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -47,28 +48,31 @@ while running:
 
         # ----- GAME SYSTEM AND LOGS -----
 
-        utils.drawText(screen, "Faça a sua jogada: ", 0, 0)
-
-        pygame.display.update()
-
-        h = engine.wait_for_command()
-        utils.drawText(screen, f"Você escolheu {h}", 100, 100)
+        h = engine.combat()
+        utils.drawText(window.screen, f"Você escolheu {h}", 100, 100)
         
         c = choice(play)
 
-        if h in play:
-            utils.drawText(screen, f"  O computador jogou {c}", 300, 200)
-            utils.drawText(screen, text[rule[play.index(h)][play.index(c)]], 250, 500)
-        
-        else:
-            utils.drawText(screen, f"  As jogadas válidas são:\n {play}", 250,500)
+        utils.drawText(window.screen, f"  O computador jogou {c}", 300, 200)
+        utils.drawText(window.screen, text[rule[play.index(h)][play.index(c)]], 250, 500)
+
+    # ----- UPDATE -----
 
     pygame.display.flip()
 
-    pygame.time.delay(5000)
+    pygame.time.delay(2500)
 
-    engine.play_again()
+    popUp = engine.play_again(window)
 
-# ----------- QUIT ------------------ 
+    again = engine.play_again.choose(popUp.window)
+
+    if again == "SIM": 
+        running = True
+
+    else:
+        running = False
+
+# ----------- QUIT --------------
 
 pygame.quit()
+sys.exit()

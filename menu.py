@@ -2,6 +2,7 @@ import pygame
 import engine
 from pygame import time
 import utils
+import sys
 
 pygame.init()
 
@@ -33,7 +34,7 @@ class Menu:
         pygame.display.set_caption("Jokenpo")
         wallpaper = pygame.image.load("graphics\\fundo_temp.jpg")
         self.background = self.screen.blit(wallpaper, (0, 0))
-        text = self.font.render("Choose your destiny", True,
+        text = self.font.render("Choose", True,
                                 (self.colors["white"]))
         text_rect = text.get_rect(center=(self.rect.w/2, self.rect.h/2))
         self.screen.blit(text, text_rect)
@@ -47,13 +48,14 @@ class Menu:
         pygame.display.update()
         pygame.time.wait(1000)
         pygame.quit()
+        sys.exit()
 
     def jogar(self):
         engine.window.scene = "game"
         self.menu_open = False
 
 class Button(pygame.sprite.Sprite):
-    def __init__(self,pos, text,window, callback):
+    def __init__(self,pos, text, window, callback):
         super().__init__()
         self.font = pygame.font.SysFont("app850.fon", 20)
         self.text_surf = window.font.render(text, True, window.colors["brown"])
