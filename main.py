@@ -1,9 +1,11 @@
 import pygame
 from random import choice
 import utils
+import json
 import engine
 import menu
 import sys
+import os
 
 pygame.init()
 
@@ -40,6 +42,7 @@ while running:
         pygame.display.update()
 
     if engine.window.scene == "game":
+
         window.screen.fill(grey)
 
         for event in pygame.event.get():
@@ -53,8 +56,12 @@ while running:
         
         c = choice(play)
 
+        result = rule[play.index(h)][play.index(c)]
+
         utils.drawText(window.screen, f"  O computador jogou {c}", 300, 200)
-        utils.drawText(window.screen, text[rule[play.index(h)][play.index(c)]], 250, 500)
+        utils.drawText(window.screen, text[result], 250, 500)
+
+        engine.score_update(result)
 
     # ----- UPDATE -----
 

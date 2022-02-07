@@ -2,6 +2,8 @@ import pygame
 from pygame.locals import *
 import utils
 import sys
+import json
+import os
 
 pygame.init()
 
@@ -109,6 +111,8 @@ def combat():
     window = utils.generate_window()
 
     window.screen.fill(colors["grey"])
+
+    score_track(window.screen)
     utils.drawText(window.screen, "Faça a sua jogada: ", 0, 0)
     
     pedra_button = utils.choice_button((width * 0.20, height * 0.6), "pedra", window)
@@ -133,3 +137,49 @@ def combat():
                 h = button.handle_event(event)
                 if h != None:
                     return h
+
+def score_track(screen):
+    filepath = os.path.join(os.path.dirname("jokenpo"), 'score.json')
+    with open(filepath, "r") as json_file:
+        score = json.load(json_file)
+
+    vitorias = str(score["vitorias"])
+    empates = str(score["empates"])
+    derrotas = str(score["derrotas"])
+
+    utils.drawText(screen, "Vitorias: " + vitorias, 1500, 10)
+    utils.drawText(screen, "Empates: " + empates, 1500, 40)
+    utils.drawText(screen, "Derrotas: " + derrotas, 1500, 70)
+
+def score_update(result):
+    filepath = os.path.join(os.path.dirname("jokenpo"), 'score.json')
+    with open(filepath, "r") as json_file:
+        score = json.load(json_file)
+
+    new_score = {}
+
+    if result == "e":
+        score_increase = score["empates"] + 1
+        new_score = {"vitorias": score["vitorias"], "empates": score_increase, "derrotas": score["derrotas"]}
+        with open(filepath, "w") as json_file:
+            json.dump(new_score, json_file)
+
+    elif result == "v":
+        score_increase = score["vitorias"] + 1
+        new_score = {"vitorias": score_increase, "empates": score["empates"], "derrotas": score["derrotas"]}
+        with open(filepath, "w") as json_file:
+            json.dump(new_score, json_file)
+        
+    elif result == "d":
+        score_increase = score["derrotas"] + 1
+        new_score = {"vitorias": score["vitorias"], "empates": score["empates"], "derrotas": score_increase}
+        with open(filepath, "w") as json_file:
+            json.dump(new_score, json_file)
+
+def score_reset():
+    filepath = os.path.join(os.path.dirname("jokenpo"), 'score.json')
+
+    new_score = {"vitorias": 0, "empates": 0, "derrotas": 0}
+
+    with open(filepath, "w") as json_file:
+            json.dump(new_score, json_file)

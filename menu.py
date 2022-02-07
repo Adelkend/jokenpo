@@ -54,6 +54,11 @@ class Menu:
         engine.window.scene = "game"
         self.menu_open = False
 
+    def reset(self):
+        engine.score_reset()
+        engine.window.scene = "menu"
+        self.menu_open = True
+
 class Button(pygame.sprite.Sprite):
     def __init__(self,pos, text, window, callback):
         super().__init__()
@@ -84,8 +89,9 @@ def game_intro(action):
 
     start_game = Button(pos=(display_width * 0.20, display_height * 0.7),text= "START",window=window, callback=window.jogar)
     quit_game = Button(pos=(display_width * 0.55, display_height * 0.7),text= "QUIT",window=window, callback=window.exit)
+    reset_button = Button(pos=(display_width * 0.35, display_height * 0.8),text= "RESET SCORE",window=window, callback=window.reset)
 
-    gui.add(start_game, quit_game)
+    gui.add(start_game, quit_game, reset_button)
 
     #Button Colors
     btn=(100,149,237)
