@@ -4,7 +4,7 @@ from pygame.locals import *
 
 pygame.init()
 
-font = pygame.font.Font(pygame.font.get_default_font(), 24)
+font = pygame.font.Font("fonts\\KellySlab-Regular.ttf", 72)
 
 colors  =   {"red": (255, 0, 0),
             "green": (0, 255, 0),
@@ -27,21 +27,21 @@ class generate_window():
         self.screen = pygame.display.set_mode(self.size)
         self.font = font
 
-def drawText(screen, t, x, y):
-    text = font.render(t, True, colors["yellow"], colors["grey"])
+def drawText(screen, t, x, y                                   , size, color):
+    font = pygame.font.Font("fonts\\KellySlab-Regular.ttf", size)
+    text = font.render(t, True, color)
     text_rectangle = text.get_rect()
     text_rectangle.topleft = (x, y)
     screen.blit(text, text_rectangle)
 
 class choice_button(pygame.sprite.Sprite):
-    def __init__(self, pos, text, window):
+    def __init__(self, pos, text, size, window):
         super().__init__()
-        self.font = font
+        self.font  = pygame.font.Font("fonts\\KellySlab-Regular.ttf", size)
         self.text = text
-        self.text_surf = window.font.render(text, True, colors["brown"])
+        self.text_surf = self.font.render(text, True, colors["white"])
         self.image = pygame.Surface((self.text_surf.get_width()+40,
-                                self.text_surf.get_height()+20))
-        self.image.fill(colors["gold"]) # -> Adicionar a "imagem" do botão
+                                self.text_surf.get_height()+20), pygame.SRCALPHA, 32)
         self.image.blit(self.text_surf, (20, 10))
         self.rect = self.image.get_rect(topleft=pos)
 

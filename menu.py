@@ -16,7 +16,7 @@ class Menu:
         self.rect = self.screen.get_rect()
         self.FPS = 30
         self.clock = pygame.time.Clock()
-        self.font = pygame.font.Font(pygame.font.get_default_font(), 24)
+        self.font = pygame.font.Font("fonts\\KellySlab-Regular.ttf", 24)
         self.menu_open = True
         self.colors = {"red": (255, 0, 0),
                        "green": (0, 255, 0),
@@ -34,10 +34,8 @@ class Menu:
         pygame.display.set_caption("Jokenpo")
         wallpaper = pygame.image.load("graphics\\fundo_temp.jpg")
         self.background = self.screen.blit(wallpaper, (0, 0))
-        text = self.font.render("Choose", True,
-                                (self.colors["white"]))
-        text_rect = text.get_rect(center=(self.rect.w/2, self.rect.h/2))
-        self.screen.blit(text, text_rect)
+        utils.drawText(self.screen, "Jokenpo!", 97, 55, 219, self.colors["white"])
+        utils.drawText(self.screen, "Intergalactic Tournament", 97, 278, 44, self.colors["white"])
 
     def exit(self):
         self.screen.fill(self.colors["black"])
@@ -62,11 +60,10 @@ class Menu:
 class Button(pygame.sprite.Sprite):
     def __init__(self,pos, text, window, callback):
         super().__init__()
-        self.font = pygame.font.SysFont("app850.fon", 20)
-        self.text_surf = window.font.render(text, True, window.colors["brown"])
+        self.font = pygame.font.Font("fonts\\KellySlab-Regular.ttf", 72)
+        self.text_surf = self.font.render(text, True, window.colors["white"])
         self.image = pygame.Surface((self.text_surf.get_width()+40,
-                                self.text_surf.get_height()+20))
-        self.image.fill(window.colors["gold"])
+                                self.text_surf.get_height()+20), pygame.SRCALPHA, 32)
         self.image.blit(self.text_surf, (20, 10))
         self.rect = self.image.get_rect(topleft=pos)
         self.callback = callback
@@ -87,10 +84,10 @@ def game_intro(action):
     clock = pygame.time.Clock()
     gui = pygame.sprite.Group()
 
-    start_game = Button(pos=(display_width * 0.20, display_height * 0.7),text= "START",window=window, callback=window.jogar)
-    quit_game = Button(pos=(display_width * 0.55, display_height * 0.7),text= "QUIT",window=window, callback=window.exit)
-    reset_button = Button(pos=(display_width * 0.35, display_height * 0.8),text= "RESET SCORE",window=window, callback=window.reset)
-
+    start_game = Button(pos=(97, 646),text= "play",window=window, callback=window.jogar)
+    reset_button = Button(pos=(97, 728),text= "reset score",window=window, callback=window.reset)
+    quit_game = Button(pos=(97,810),text= "exit",window=window, callback=window.exit)
+    
     gui.add(start_game, quit_game, reset_button)
 
     #Button Colors

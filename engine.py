@@ -8,7 +8,7 @@ import os
 pygame.init()
 
 keys = pygame.key.get_pressed()
-font = pygame.font.Font(pygame.font.get_default_font(), 24)
+font = pygame.font.Font("fonts\\KellySlab-Regular.ttf", 24)
 
 size = width, height = 1920, 1080
 colors  =   {"red": (255, 0, 0),
@@ -45,25 +45,6 @@ class window:
 #                 h = "tesoura"
 #                 return h
 
-# def play_again():
-
-#     running = False
-#     window = utils.generate_window()
-#     window.screen.fill("gray")
-#     utils.drawText(window.screen, "Se você deseja jogar novamente, aperte 4", 150, 150)
-#     utils.drawText(window.screen, "Se você deseja sair, aperte 5", 200, 200)
-
-#     pygame.display.update()
-
-#     while running == False:
-#         for event in pygame.event.get():
-#             if event.type == QUIT or event.type == KEYDOWN and event.key == K_5:
-#                 pygame.quit()
-#                 sys.exit()
-#             if event.type == KEYDOWN and event.key == K_4:
-#                 running = True
-#                 return running
-
 class play_again(pygame.sprite.Sprite):
     def __init__(self, window):
         super().__init__()
@@ -74,7 +55,7 @@ class play_again(pygame.sprite.Sprite):
         self.pos = self.w, self.h = (1920 * 0.3, 1080 * 0.3)
 
         window.screen.blit(red, self.pos)
-        utils.drawText(window.screen, "Deseja continuar a jogar?", self.w + 10, self.h + 10)
+        utils.drawText(window.screen, "Deseja continuar a jogar?", self.w + 10, self.h + 10, 24, colors["white"])
 
     def choose(window):
 
@@ -82,8 +63,8 @@ class play_again(pygame.sprite.Sprite):
 
         gui = pygame.sprite.Group()
 
-        sim_button = utils.choice_button((w + 20, h + 200), "SIM", window)
-        nao_button = utils.choice_button((w + 20 + 150, h + 200), "NAO", window)
+        sim_button = utils.choice_button((w + 20, h + 200), "SIM", 24, window)
+        nao_button = utils.choice_button((w + 20 + 150, h + 200), "NAO", 24, window)
 
         gui.add(sim_button, nao_button)
         gui.update()
@@ -110,14 +91,14 @@ def combat():
 
     window = utils.generate_window()
 
-    window.screen.fill(colors["grey"])
+    window.screen.fill(colors["black"])
 
     score_track(window.screen)
-    utils.drawText(window.screen, "Faça a sua jogada: ", 0, 0)
+    utils.drawText(window.screen, "Choose your weapon", 325, 89, 144, colors["white"])
     
-    pedra_button = utils.choice_button((width * 0.20, height * 0.6), "pedra", window)
-    papel_button = utils.choice_button((width * 0.20 + 300, height * 0.6), "papel", window)
-    tesoura_button = utils.choice_button((width * 0.20 + 600, height * 0.6), "tesoura", window)
+    pedra_button = utils.choice_button((251, 792), "scissors", 72, window)
+    papel_button = utils.choice_button((904, 792), "rock", 72, window)
+    tesoura_button = utils.choice_button((1453, 792), "paper", 72, window)
 
     gui.add(pedra_button, papel_button, tesoura_button)
     gui.update()
@@ -127,7 +108,7 @@ def combat():
 
     h = None
 
-    while h != "pedra" or h != "papel" or h != "tesoura":
+    while h != "rock" or h != "paper" or h != "scissors":
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -147,9 +128,9 @@ def score_track(screen):
     empates = str(score["empates"])
     derrotas = str(score["derrotas"])
 
-    utils.drawText(screen, "Vitorias: " + vitorias, 1500, 10)
-    utils.drawText(screen, "Empates: " + empates, 1500, 40)
-    utils.drawText(screen, "Derrotas: " + derrotas, 1500, 70)
+    utils.drawText(screen, "Vitorias: " + vitorias, 1500, 10, 24, colors["white"])
+    utils.drawText(screen, "Empates: " + empates, 1500, 40, 24, colors["white"])
+    utils.drawText(screen, "Derrotas: " + derrotas, 1500, 70, 24, colors["white"])
 
 def score_update(result):
     filepath = os.path.join(os.path.dirname("jokenpo"), 'score.json')
