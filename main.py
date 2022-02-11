@@ -1,11 +1,10 @@
+from asyncio.windows_events import NULL
 import pygame
 from random import choice
-import utils
-import json
-import engine
-import menu
+import utils, engine, menu, login
 import sys
 import os
+import tkinter as tk
 
 pygame.init()
 
@@ -13,21 +12,19 @@ pygame.init()
 
 colors  =   {"red": (255, 0, 0),
             "green": (0, 255, 0),
-            "blue": (0, 0, 255),
             "white": (255, 255, 255),
             "black": (0, 0, 0),
-            "brown": (153, 76, 0),
             "grey": (61, 59, 52),
-            "gold": (255, 215, 0),
             "bright_red": (155, 0, 56),
-            "bright_gold": (255, 255, 0),
-            "yellow" : (186, 149, 13)
+            "purple" : (205, 48, 238),
+            "green" : (175, 251, 205)
             }
 
 # ------------ SETUP -----------------
 
 window = utils.generate_window()
 running = True
+played = False
 
 # Lista das jogadas válidas
 play = ["rock", "paper", "scissors"]
@@ -45,6 +42,11 @@ text = {
 # ------------ GAME LOOP --------------
 
 while running:
+
+    if engine.window.scene == "login":
+        app = login.App()
+
+        engine.window.scene = app.get_result()
 
     if engine.window.scene == "menu":
         menu.game_intro(utils.generate_window())
@@ -73,21 +75,25 @@ while running:
 
         engine.score_update(result)
 
+        played = True
+
     # ----- UPDATE -----
 
     pygame.display.flip()
 
-    pygame.time.delay(2500)
+    if played == True:
 
-    popUp = engine.play_again(window)
+        pygame.time.delay(2500)
 
-    again = engine.play_again.choose(popUp.window)
+        popUp = engine.play_again(window)
 
-    if again == "SIM": 
-        engine.window.scene = "game"
+        again = engine.play_again.choose(popUp.window)
 
-    else:
-        engine.window.scene = "menu"
+        if again == "SIM": 
+            engine.window.scene = "game"
+
+        else:
+            engine.window.scene = "menu"
 
 # ----------- QUIT --------------
 

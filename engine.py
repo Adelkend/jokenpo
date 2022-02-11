@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import *
-import utils
+import utils, login
 import sys
 import json
 import os
@@ -13,38 +13,48 @@ font = pygame.font.Font("fonts\\KellySlab-Regular.ttf", 24)
 size = width, height = 1920, 1080
 colors  =   {"red": (255, 0, 0),
             "green": (0, 255, 0),
-            "blue": (0, 0, 255),
             "white": (255, 255, 255),
             "black": (0, 0, 0),
-            "brown": (153, 76, 0),
             "grey": (61, 59, 52),
-            "gold": (255, 215, 0),
             "bright_red": (155, 0, 56),
-            "bright_gold": (255, 255, 0),
-            "yellow" : (186, 149, 13)
+            "purple" : (205, 48, 238),
+            "green" : (175, 251, 205)
             }
 
 class window:
-    scene = "menu"
+    scene = "login"
 
-# def wait_for_command():
-#     h = "esperando"
+class login_window(pygame.sprite.Sprite):
+    def __init__(self,window):
+        super().__init__()
+        self.size = 600, 300
+        self.image = pygame.Surface(self.size)
+        red = pygame.image.load("graphics\\red.png")
+        self.window = window
+        self.pos = self.w, self.h = (1920 * 0.3, 1080 * 0.3)
+        window.screen.fill(colors["black"])
+        window.screen.blit(red, self.pos)
+        self.rect = self.image.get_rect(topleft=self.pos)
 
-#     while h == "esperando":
-#         for event in pygame.event.get():
-#             if event.type == QUIT:
-#                 pygame.quit()
-#                 sys.exit()
-#             if event.type == KEYDOWN and event.key == K_1:
-#                 h = "pedra"
-#                 return h
-#             if event.type == KEYDOWN and event.key == K_2:
-#                 h = "papel"
-#                 return h
-#             if event.type == KEYDOWN and event.key == K_3:
-#                 h = "tesoura"
-#                 return h
+        pygame.display.update()
 
+    def get_id(self):
+        waiting = True
+
+        while waiting == True:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                    if self.rect.collidepoint(pygame.mouse.get_pos()):
+                        username = input('username')
+                        password = input('password')
+                        waiting = False
+
+        result = login.login(username, password)
+        return result
+                
 class play_again(pygame.sprite.Sprite):
     def __init__(self, window):
         super().__init__()
@@ -67,8 +77,6 @@ class play_again(pygame.sprite.Sprite):
         nao_button = utils.choice_button((w + 20 + 150, h + 200), "NAO", 24, window)
 
         gui.add(sim_button, nao_button)
-        gui.update()
-        gui.draw(window.screen)
 
         pygame.display.update()
 
@@ -85,6 +93,9 @@ class play_again(pygame.sprite.Sprite):
                     if choice != None:
                         return choice
 
+            gui.update()
+            gui.draw(window.screen)
+
 def combat():
     
     gui = pygame.sprite.Group()
@@ -95,14 +106,21 @@ def combat():
 
     score_track(window.screen)
     utils.drawText(window.screen, "Choose your weapon", 325, 89, 144, colors["white"])
+
+    pedra_image = pygame.image.load("graphics\\stone.png")
+    papel_image = pygame.image.load("graphics\\paper.png")
+    tesoura_image = pygame.image.load("graphics\\scissors.png")
+
+    window.screen.blit(pedra_image, (854, 498))
+    window.screen.blit(papel_image, (1436, 498))
+    window.screen.blit(tesoura_image, (264, 510))
     
     pedra_button = utils.choice_button((251, 792), "scissors", 72, window)
     papel_button = utils.choice_button((904, 792), "rock", 72, window)
     tesoura_button = utils.choice_button((1453, 792), "paper", 72, window)
 
     gui.add(pedra_button, papel_button, tesoura_button)
-    gui.update()
-    gui.draw(window.screen)
+    
 
     pygame.display.update()
 
@@ -118,6 +136,10 @@ def combat():
                 h = button.handle_event(event)
                 if h != None:
                     return h
+
+        gui.update()
+        gui.draw(window.screen)
+
 
 def score_track(screen):
     filepath = os.path.join(os.path.dirname("jokenpo"), 'score.json')

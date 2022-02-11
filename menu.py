@@ -1,6 +1,5 @@
 import pygame
 import engine
-from pygame import time
 import utils
 import sys
 
@@ -18,20 +17,19 @@ class Menu:
         self.clock = pygame.time.Clock()
         self.font = pygame.font.Font("fonts\\KellySlab-Regular.ttf", 24)
         self.menu_open = True
-        self.colors = {"red": (255, 0, 0),
-                       "green": (0, 255, 0),
-                       "blue": (0, 0, 255),
-                       "white": (255, 255, 255),
-                       "black": (0, 0, 0),
-                       "brown": (153, 76, 0),
-                       "grey": (100, 100, 100),
-                       "gold": (255, 215, 0),
-                       "bright_red": (155, 0, 56),
-                       "bright_gold": (255, 255, 0)}
+        self.colors  =   {"red": (255, 0, 0),
+                        "green": (0, 255, 0),
+                        "white": (255, 255, 255),
+                        "black": (0, 0, 0),
+                        "grey": (61, 59, 52),
+                        "bright_red": (155, 0, 56),
+                        "purple" : (205, 48, 238),
+                        "green" : (175, 251, 205)
+                        }
 
     def setup(self):
         self.screen.fill(self.colors["black"])
-        pygame.display.set_caption("Jokenpo")
+        pygame.display.set_caption("Jokenpo!")
         wallpaper = pygame.image.load("graphics\\fundo_temp.jpg")
         self.background = self.screen.blit(wallpaper, (0, 0))
         utils.drawText(self.screen, "Jokenpo!", 97, 55, 219, self.colors["white"])
@@ -60,15 +58,27 @@ class Menu:
 class Button(pygame.sprite.Sprite):
     def __init__(self,pos, text, window, callback):
         super().__init__()
+        self.window = window
+        self.text = text
         self.font = pygame.font.Font("fonts\\KellySlab-Regular.ttf", 72)
         self.text_surf = self.font.render(text, True, window.colors["white"])
-        self.image = pygame.Surface((self.text_surf.get_width()+40,
-                                self.text_surf.get_height()+20), pygame.SRCALPHA, 32)
+        self.image = pygame.Surface((self.text_surf.get_width()+20,
+                                self.text_surf.get_height()+8), pygame.SRCALPHA, 32)
         self.image.blit(self.text_surf, (20, 10))
         self.rect = self.image.get_rect(topleft=pos)
         self.callback = callback
 
     def handle_event(self, event):
+        if self.rect.collidepoint(pygame.mouse.get_pos()):
+            self.text_surf = self.font.render(self.text, True, self.window.colors["green"])
+            self.image.blit(self.text_surf, (20, 10))
+            pygame.display.flip()
+
+        if not self.rect.collidepoint(pygame.mouse.get_pos()):
+            self.text_surf = self.font.render(self.text, True, self.window.colors["white"])
+            self.image.blit(self.text_surf, (20, 10))
+            pygame.display.flip()
+
         if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             if self.rect.collidepoint(event.pos):
                 self.callback()
@@ -85,8 +95,8 @@ def game_intro(action):
     gui = pygame.sprite.Group()
 
     start_game = Button(pos=(97, 646),text= "play",window=window, callback=window.jogar)
-    reset_button = Button(pos=(97, 728),text= "reset score",window=window, callback=window.reset)
-    quit_game = Button(pos=(97,810),text= "exit",window=window, callback=window.exit)
+    reset_button = Button(pos=(97, 742),text= "reset score",window=window, callback=window.reset)
+    quit_game = Button(pos=(97,838),text= "exit",window=window, callback=window.exit)
     
     gui.add(start_game, quit_game, reset_button)
 
@@ -100,7 +110,7 @@ def game_intro(action):
     while window.menu_open == True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                Menu.exit()
+                window.exit()
 
             for button in gui:
                 button.handle_event(event)
